@@ -4,7 +4,8 @@ import tailwind from '@astrojs/tailwind';
 // Fully static output -- builds to plain HTML/CSS/JS in dist/.
 // No server runtime required to host it anywhere.
 export default defineConfig({
-  site: 'https://example.com',
+  site: 'https://DadmehrRahbari.github.io',
+  base: '/RTAI', // Required if deploying to a standard repository subpath
   output: 'static',
   integrations: [
     tailwind({
