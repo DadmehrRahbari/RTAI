@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../site.config';
+---
+
+<BaseLayout title="Contact" description="Get in touch.">
+  <section class="mx-auto max-w-6xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 border-b border-ink-600">
+    <p class="eyebrow">Contact</p>
+    <h1 class="mt-5 max-w-2xl font-display text-4xl sm:text-5xl font-semibold leading-tight">
+      Tell us about the system you're building.
+    </h1>
+    <p class="mt-6 max-w-xl text-lg text-paper-300">
+      One perception model, one deployment target, a few sentences on what "failure" looks like for you --
+      that's enough for a first conversation.
+    </p>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+    <div class="grid gap-16 md:grid-cols-[1fr_1.2fr]">
+      <div>
+        <p class="eyebrow">Direct</p>
+        <a href={`mailto:${site.email}`} class="mt-4 block font-display text-2xl font-semibold hover:text-amber-400">
+          {site.email}
+        </a>
+        <p class="mt-6 text-sm text-paper-500">{site.location}</p>
+
+        <div class="mt-10 flex gap-4 font-mono text-xs uppercase tracking-wider">
+          <a href={site.social.linkedin} class="text-paper-300 hover:text-amber-400">LinkedIn</a>
+          <a href={site.social.github} class="text-paper-300 hover:text-amber-400">GitHub</a>
+        </div>
+      </div>
+
+      <!--
+        This form works out of the box, with zero backend, IF hosted on Netlify:
+        Netlify auto-detects `data-netlify="true"` at build time and handles
+        submissions (spam-filtered, emailed to your account) with no server code.
+        If you host elsewhere, swap the form `action` for a service like
+        Formspree, or point it at your own endpoint, everything else here
+        stays the same.
+      -->
+      <form
+        name="contact"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="company-website"
+        class="space-y-5"
+      >
+        <input type="hidden" name="form-name" value="contact" />
+        <p class="hidden">
+          <label>Don't fill this out if you're human: <input name="company-website" /></label>
+        </p>
+
+        <div>
+          <label for="name" class="font-mono text-xs uppercase tracking-wider text-paper-500">Name</label>
+          <input id="name" name="name" type="text" required
+            class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none" />
+        </div>
+
+        <div>
+          <label for="email" class="font-mono text-xs uppercase tracking-wider text-paper-500">Email</label>
+          <input id="email" name="email" type="email" required
+            class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none" />
+        </div>
+
+        <div>
+          <label for="company" class="font-mono text-xs uppercase tracking-wider text-paper-500">Company</label>
+          <input id="company" name="company" type="text"
+            class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none" />
+        </div>
+
+        <div>
+          <label for="message" class="font-mono text-xs uppercase tracking-wider text-paper-500">What are you building?</label>
+          <textarea id="message" name="message" rows="5" required
+            class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none"></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary">Send</button>
+      </form>
+    </div>
+  </section>
+</BaseLayout>

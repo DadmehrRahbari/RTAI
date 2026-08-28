@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../site.config';
+
+const roles = [
+  {
+    title: 'Founding ML engineer',
+    tag: 'Tartu / Tallinn, remote-friendly',
+    body: 'Own the perception-monitoring and self-healing stack end to end, from the trust-decision model to the fault-injection benchmark that proves it works.',
+  },
+  {
+    title: 'Founding full-stack engineer',
+    tag: 'Tartu / Tallinn, remote-friendly',
+    body: 'Build the SDK, the fleet dashboard, and the integration surface that lets a team attach their own perception model in an afternoon.',
+  },
+];
+---
+
+<BaseLayout title="Careers" description="Open roles.">
+  <section class="mx-auto max-w-6xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 border-b border-ink-600">
+    <p class="eyebrow">Careers</p>
+    <h1 class="mt-5 max-w-2xl font-display text-4xl sm:text-5xl font-semibold leading-tight">
+      Small team, early stage, real reference deployment already running.
+    </h1>
+    <p class="mt-6 max-w-xl text-lg text-paper-300">
+      We're not hiring at scale yet. If one of the roles below fits, or you think we're missing one we
+      should have, write to us directly.
+    </p>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+    <div class="space-y-6">
+      {
+        roles.map((r) => (
+          <div class="panel">
+            <div class="flex flex-wrap items-baseline justify-between gap-3">
+              <h2 class="font-display text-lg font-semibold">{r.title}</h2>
+              <span class="font-mono text-xs text-paper-500">{r.tag}</span>
+            </div>
+            <p class="mt-3 text-sm text-paper-300 max-w-2xl">{r.body}</p>
+            <a href="/contact" class="mt-4 inline-block text-sm font-mono uppercase tracking-wider text-teal-400 hover:text-teal-300">
+              Get in touch &rarr;
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="border-t border-ink-600">
+    <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28 text-center">
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold max-w-xl mx-auto">
+        Don't see the right role listed?
+      </h2>
+      <p class="mt-5 text-paper-300 max-w-xl mx-auto">
+        Tell us what you'd want to work on. Early hires shape the roadmap, not just fill a spec.
+      </p>
+      <div class="mt-8">
+        <a href={`mailto:${site.email}`} class="btn-primary">Email {site.email}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

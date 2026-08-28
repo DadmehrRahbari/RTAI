@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../site.config';
+---
+
+<BaseLayout title="Company" description="Why we're building an independent trust layer for autonomous systems.">
+  <section class="mx-auto max-w-6xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 border-b border-ink-600">
+    <p class="eyebrow">Company</p>
+    <h1 class="mt-5 max-w-3xl font-display text-4xl sm:text-5xl font-semibold leading-tight">
+      Autonomy shouldn't have to choose between capable and accountable.
+    </h1>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+    <div class="grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:gap-16">
+      <p class="eyebrow">Why we exist</p>
+      <div class="space-y-6 text-paper-300">
+        <p>
+          Perception models keep getting more capable and more opaque at the same time. Most teams
+          shipping autonomous systems today have no independent answer to a simple question: how do you
+          know, in real time, that the model making decisions right now is the same trustworthy model you
+          validated before deployment?
+        </p>
+        <p>
+          We started with a single, narrow belief: a monitor that only reasons about a model's outputs is
+          not enough if the monitor itself can silently break. So we built the self-healing layer first,
+          not as an afterthought bolted onto a dashboard, but as the thing the whole system is organized
+          around.
+        </p>
+        <p class="text-paper-100">
+          {site.name} exists to make that answer available to any team building autonomy that has to work,
+          and fail safely, without someone watching every frame.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-ink-600 bg-ink-900/40">
+    <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+      <p class="eyebrow">How we work</p>
+      <div class="mt-14 grid gap-6 sm:grid-cols-3">
+        <div class="panel">
+          <h3 class="font-display text-lg font-semibold">Measure, don't assert</h3>
+          <p class="mt-3 text-sm text-paper-300">Every claim we make about detection or recovery is backed by a benchmark we can show you.</p>
+        </div>
+        <div class="panel">
+          <h3 class="font-display text-lg font-semibold">Black-box by default</h3>
+          <p class="mt-3 text-sm text-paper-300">We design for teams who can't or won't hand over their model's weights, and build our own trust around that constraint, not against it.</p>
+        </div>
+        <div class="panel">
+          <h3 class="font-display text-lg font-semibold">Escalate, don't hide</h3>
+          <p class="mt-3 text-sm text-paper-300">A system that keeps quietly retrying a fault it can't fix is worse than one that asks for help. We design for the second.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+    <p class="eyebrow">Where we are</p>
+    <h2 class="mt-4 font-display text-2xl sm:text-3xl font-semibold">{site.location}</h2>
+    <p class="mt-4 max-w-xl text-paper-300">
+      Building close to Estonia's deep-tech and autonomous-systems community, with a reference deployment
+      already running end-to-end.
+    </p>
+  </section>
+
+  <section class="border-t border-ink-600">
+    <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28 text-center">
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold max-w-xl mx-auto">
+        Building autonomous systems and want an independent second opinion?
+      </h2>
+      <div class="mt-8 flex justify-center gap-4">
+        <a href="/contact" class="btn-primary">Talk to us</a>
+        <a href="/careers" class="btn-secondary">See open roles</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

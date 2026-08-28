@@ -1,0 +1,39 @@
+---
+import { site, footerLinks, currentYear } from '../site.config';
+---
+
+<footer class="border-t border-ink-600 mt-32">
+  <div class="mx-auto max-w-6xl px-6 py-14 grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+    <div>
+      <div class="flex items-center gap-2 font-display text-lg font-semibold">
+        <span class="inline-block h-2 w-2 bg-teal-400"></span>
+        {site.name}
+      </div>
+      <p class="mt-4 max-w-sm text-sm text-paper-500">{site.tagline}</p>
+      <p class="mt-6 font-mono text-xs text-paper-500">{site.location}</p>
+    </div>
+
+    <div>
+      <p class="eyebrow mb-4">Sitemap</p>
+      <ul class="space-y-2 text-sm text-paper-300">
+        {footerLinks.map((l) => <li><a href={l.href} class="hover:text-amber-400">{l.label}</a></li>)}
+      </ul>
+    </div>
+
+    <div>
+      <p class="eyebrow mb-4">Connect</p>
+      <ul class="space-y-2 text-sm text-paper-300">
+        <li><a href={`mailto:${site.email}`} class="hover:text-amber-400">{site.email}</a></li>
+        <li><a href={site.social.linkedin} class="hover:text-amber-400">LinkedIn</a></li>
+        <li><a href={site.social.github} class="hover:text-amber-400">GitHub</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-ink-600">
+    <div class="mx-auto max-w-6xl px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-2 font-mono text-xs text-paper-500">
+      <p>© {currentYear} {site.legalName}. All rights reserved.</p>
+      <p>Built to fail safely.</p>
+    </div>
+  </div>
+</footer>

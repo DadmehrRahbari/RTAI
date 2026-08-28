@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const faults = [
+  { name: 'Hardware fault, obvious', detail: 'weights pushed far out of range', catches: 'Hash check and legacy checksum both catch this, the easy case.' },
+  { name: 'Hardware fault, subtle', detail: 'weights permuted, magnitude sum unchanged', catches: 'Only a real cryptographic hash catches this. A sum-of-magnitudes checksum is structurally blind to it.' },
+  { name: 'Behavioral fault', detail: 'compute path broken, weights untouched', catches: 'Only the behavioral self-test suite catches this, a weight hash cannot, by construction.' },
+  { name: 'Genuine domain shift', detail: 'sustained, real distribution change', catches: 'Confirmed only after sustained-drift detection, never on a single frame.' },
+  { name: 'Transient noise', detail: 'one noisy frame, not sustained', catches: 'Measured as a false-trigger rate, the system should not react to this at all.' },
+];
+
+const references = [
+  'Rahbari, D., Daneshtalab, M., & Jenihhin, M. (2026). Aux-AI: A Federated Independent Oversight Framework for Trust-Aware Industrial Autonomy.',
+];
+---
+
+<BaseLayout title="Technology & research" description="Methodology, benchmark design, and results behind the self-healing architecture.">
+  <section class="mx-auto max-w-6xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 border-b border-ink-600">
+    <p class="eyebrow">Technology &amp; research</p>
+    <h1 class="mt-5 max-w-3xl font-display text-4xl sm:text-5xl font-semibold leading-tight">
+      We measure our own failure modes before claiming we've solved them.
+    </h1>
+    <p class="mt-6 max-w-2xl text-lg text-paper-300">
+      Every claim on this page is backed by a controlled fault-injection benchmark, run against real
+      perception checkpoints where possible, engineered specifically to demonstrate the blind spots of
+      simpler approaches rather than just assert them.
+    </p>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+    <p class="eyebrow">Benchmark design</p>
+    <h2 class="mt-4 max-w-2xl font-display text-2xl sm:text-3xl font-semibold leading-tight">
+      Five fault types, three arms, measured the same way every time.
+    </h2>
+    <p class="mt-6 max-w-2xl text-paper-300">
+      Every trial compares three arms: no self-healing at all, a reconstructed baseline representative of
+      a simpler local-checksum approach, and the full tiered architecture, so the value of each layer is
+      visible, not assumed.
+    </p>
+
+    <div class="mt-14 overflow-x-auto">
+      <table class="w-full text-left text-sm border-collapse">
+        <thead>
+          <tr class="border-b border-ink-600 font-mono text-xs uppercase tracking-wider text-paper-500">
+            <th class="py-3 pr-4">Fault type</th>
+            <th class="py-3 pr-4">What it simulates</th>
+            <th class="py-3">What it proves</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            faults.map((f) => (
+              <tr class="border-b border-ink-700 align-top">
+                <td class="py-4 pr-4 font-semibold text-paper-100 whitespace-nowrap">{f.name}</td>
+                <td class="py-4 pr-4 text-paper-500 font-mono text-xs">{f.detail}</td>
+                <td class="py-4 text-paper-300">{f.catches}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="border-y border-ink-600 bg-ink-900/40">
+    <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+      <p class="eyebrow">What we measure</p>
+      <h2 class="mt-4 max-w-2xl font-display text-2xl sm:text-3xl font-semibold leading-tight">
+        Detection rate, false positives, localization accuracy, and how long recovery takes.
+      </h2>
+      <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="panel">
+          <h3 class="font-display text-base font-semibold">Detection rate</h3>
+          <p class="mt-3 text-sm text-paper-300">Per fault type, across repeated trials at a fixed, known injection point.</p>
+        </div>
+        <div class="panel">
+          <h3 class="font-display text-base font-semibold">False-positive rate</h3>
+          <p class="mt-3 text-sm text-paper-300">Measured on clean runs and on transient noise specifically, lower is strictly better.</p>
+        </div>
+        <div class="panel">
+          <h3 class="font-display text-base font-semibold">Localization accuracy</h3>
+          <p class="mt-3 text-sm text-paper-300">Does the diagnosis match the actual injected fault, only meaningful for an architecture that localizes at all.</p>
+        </div>
+        <div class="panel">
+          <h3 class="font-display text-base font-semibold">Recovery latency</h3>
+          <p class="mt-3 text-sm text-paper-300">Frames from fault onset to a verified, trusted state, and segmentation quality before/after a heal cycle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+    <p class="eyebrow">Design principles</p>
+    <div class="mt-8 grid gap-8 md:grid-cols-2">
+      <div>
+        <h3 class="font-display text-lg font-semibold">No fabricated numbers</h3>
+        <p class="mt-3 text-sm text-paper-300">
+          If a metric can't be honestly measured for a given scenario, for instance, accuracy metrics on
+          a live flight with no ground-truth anomaly label, it's reported as unavailable, not estimated
+          or faked to fill a chart.
+        </p>
+      </div>
+      <div>
+        <h3 class="font-display text-lg font-semibold">Real checkpoints, real substitutes clearly labeled</h3>
+        <p class="mt-3 text-sm text-paper-300">
+          Benchmarks prefer real, trained models automatically when available, and fall back to small,
+          explicitly-labeled substitutes only when they aren't, so results are never silently generated
+          from a toy model.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-16 border-t border-ink-600 pt-10">
+      <p class="eyebrow">References</p>
+      <ul class="mt-4 space-y-2 text-sm text-paper-500 font-mono">
+        {references.map((r) => <li>{r}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="border-y border-ink-600 bg-ink-900/40">
+    <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+      <p class="eyebrow">Where the monitor actually lives</p>
+      <h2 class="mt-4 max-w-2xl font-display text-2xl sm:text-3xl font-semibold leading-tight">
+        Not one placement. Three, each doing a job the others structurally can't.
+      </h2>
+      <p class="mt-6 max-w-2xl text-paper-300">
+        This isn't a compromise, it's the pattern that both the MLOps-monitoring literature and the
+        safety-critical robotics literature converge on independently. A single placement is never enough:
+        something has to be fast enough to gate an action, something has to see across the whole fleet, and
+        something has to produce the evidence a safety or procurement review will actually ask for.
+      </p>
+
+      <div class="mt-14 grid gap-6 sm:grid-cols-3">
+        <div class="panel">
+          <span class="status-chip ok">Inline</span>
+          <h3 class="mt-4 font-display text-base font-semibold">Every frame, next to Big-AI</h3>
+          <p class="mt-3 text-sm text-paper-300">
+            Tier 0, Meta, and Tier 1 run in-process, fast enough to gate the actuator before a bad frame is
+            ever acted on. This is the same principle formalized in runtime-assurance research for
+            autonomous vehicles, pairing a fast, unverifiable perception layer with a monitor that can
+            intervene in real time, an idea academic work calls the Simplex and Perception Simplex
+            architectures. The honest difference: those architectures typically wrap a provably-bounded
+            classical detector; ours is a learned, statistical trust layer, traded for the ability to watch
+            any perception model rather than one with a hand-derived safety proof. Closing that gap for the
+            single highest-stakes failure mode is on our roadmap, not a solved problem.
+          </p>
+        </div>
+        <div class="panel">
+          <span class="status-chip ok">Fleet-wide</span>
+          <h3 class="mt-4 font-display text-base font-semibold">A dedicated, federated service</h3>
+          <p class="mt-3 text-sm text-paper-300">
+            The federated coordinator and fleet-stats endpoint run asynchronously, aggregating trust across
+            every connected unit, too slow and too expensive to run per frame, but this is where a
+            quarantined node's fresh, verified reference actually comes from. Standard MLOps monitoring
+            architecture converges on the same split: a lightweight in-process check paired with a
+            dedicated service for anything that needs a wider view.
+          </p>
+        </div>
+        <div class="panel">
+          <span class="status-chip ok">Batch / CI</span>
+          <h3 class="mt-4 font-display text-base font-semibold">A gate before release, not after</h3>
+          <p class="mt-3 text-sm text-paper-300">
+            The fault-injection benchmark on this page runs as a release gate, not a one-off report --
+            producing the detection-rate, false-positive, and recovery-latency numbers a safety review or
+            an AI governance framework will ask for before anything ships. Too slow for every frame, exactly
+            right for every release.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-ink-600">
+    <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28 text-center">
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold max-w-xl mx-auto">
+        Want the benchmark run against your own perception model?
+      </h2>
+      <div class="mt-8">
+        <a href="/contact" class="btn-primary">Talk to us</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

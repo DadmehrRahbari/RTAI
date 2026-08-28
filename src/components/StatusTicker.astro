@@ -1,0 +1,77 @@
+<div
+  id="status-ticker"
+  class="panel font-mono text-xs leading-relaxed overflow-hidden"
+  role="status"
+  aria-live="polite"
+>
+  <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+    <span class="text-paper-500">FRAME <span id="st-frame" class="text-paper-100">004821</span></span>
+    <span class="text-paper-500">TIER0 <span id="st-tier0" class="status-chip ok">ok</span></span>
+    <span class="text-paper-500">META <span id="st-meta" class="status-chip ok">ok</span></span>
+    <span class="text-paper-500">TIER1 <span id="st-tier1" class="status-chip ok">ok</span></span>
+    <span class="text-paper-500">TRUST <span id="st-trust" class="text-teal-400">0.98</span></span>
+  </div>
+  <div class="mt-3 text-paper-300">
+    <span class="text-amber-400">&gt;</span> <span id="st-log">watching every frame, verifying its own weights against a server-issued fingerprint</span>
+  </div>
+</div>
+
+<script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const el = {
+    frame: document.getElementById('st-frame'),
+    tier0: document.getElementById('st-tier0'),
+    meta: document.getElementById('st-meta'),
+    tier1: document.getElementById('st-tier1'),
+    trust: document.getElementById('st-trust'),
+    log: document.getElementById('st-log'),
+  };
+
+  function setChip(node, state) {
+    if (!node) return;
+    node.classList.remove('ok', 'warn', 'fault');
+    node.classList.add(state);
+    node.textContent = state === 'ok' ? 'ok' : state === 'warn' ? 'degraded' : 'fault';
+  }
+
+  if (reduceMotion || !el.frame) {
+    // Respect reduced-motion: leave the static "healthy" state in place, no animation.
+  } else {
+    let frame = 4821;
+    let phase = 0; // 0 = healthy, 1 = fault detected, 2 = resyncing, 3 = recovered
+    const messages = [
+      'watching every frame, verifying its own weights against a server-issued fingerprint',
+      'hash mismatch on tier-0 integrity check, quarantining node, requesting federated resync',
+      'fetching a fresh, server-verified model, adopting new integrity fingerprint',
+      'resync verified. trust restored, sustained-drift gate reset',
+    ];
+
+    setInterval(() => {
+      frame += Math.floor(Math.random() * 30) + 5;
+      if (el.frame) el.frame.textContent = String(frame).padStart(6, '0');
+
+      if (phase === 0 && Math.random() < 0.12) phase = 1;
+      else if (phase === 1) phase = 2;
+      else if (phase === 2) phase = 3;
+      else if (phase === 3) phase = 0;
+
+      if (phase === 0) {
+        setChip(el.tier0, 'ok');
+        setChip(el.meta, 'ok');
+        setChip(el.tier1, 'ok');
+        if (el.trust) { el.trust.textContent = '0.98'; el.trust.className = 'text-teal-400'; }
+      } else if (phase === 1) {
+        setChip(el.tier0, 'fault');
+        if (el.trust) { el.trust.textContent = '0.00'; el.trust.className = 'text-fault-400'; }
+      } else if (phase === 2) {
+        setChip(el.tier0, 'warn');
+        if (el.trust) { el.trust.textContent = '0.00'; el.trust.className = 'text-amber-400'; }
+      } else if (phase === 3) {
+        setChip(el.tier0, 'ok');
+        if (el.trust) { el.trust.textContent = '0.97'; el.trust.className = 'text-teal-400'; }
+      }
+      if (el.log) el.log.textContent = messages[phase];
+    }, 1800);
+  }
+</script>

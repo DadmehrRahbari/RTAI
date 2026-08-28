@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Case studies" description="Reference deployments and validation work.">
+  <section class="mx-auto max-w-6xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 border-b border-ink-600">
+    <p class="eyebrow">Case studies</p>
+    <h1 class="mt-5 max-w-3xl font-display text-4xl sm:text-5xl font-semibold leading-tight">
+      Early-stage, and honest about it.
+    </h1>
+    <p class="mt-6 max-w-2xl text-lg text-paper-300">
+      We'd rather show you one real, verifiable reference deployment than a wall of logos we can't back
+      up. Here's what's been validated so far, more will be added as pilot deployments complete.
+    </p>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+    <div class="panel">
+      <span class="status-chip ok">Reference deployment</span>
+      <h2 class="mt-4 font-display text-2xl font-semibold">Simulated fleet, live flight environment</h2>
+      <p class="mt-4 max-w-2xl text-paper-300">
+        A multi-drone reference deployment running the full pipeline against a live PX4/Gazebo flight
+        simulation, with a real semantic-segmentation perception stack under audit and real flight
+        telemetry feeding the sensor-health signals. The reliability score gates the flight controller
+        directly, a confirmed fault triggers a real hold, not a log line.
+      </p>
+      <div class="mt-6 grid gap-4 sm:grid-cols-3 text-sm">
+        <div class="border-t border-ink-600 pt-4">
+          <div class="font-mono text-xs text-paper-500">Perception stack</div>
+          <div class="mt-1 text-paper-100">Classification + segmentation, real trained checkpoints</div>
+        </div>
+        <div class="border-t border-ink-600 pt-4">
+          <div class="font-mono text-xs text-paper-500">Environment</div>
+          <div class="mt-1 text-paper-100">Gazebo + PX4 SITL, real flight controller in the loop</div>
+        </div>
+        <div class="border-t border-ink-600 pt-4">
+          <div class="font-mono text-xs text-paper-500">Validation</div>
+          <div class="mt-1 text-paper-100">Controlled fault-injection benchmark, see technology page</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-t border-ink-600">
+    <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28 text-center">
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold max-w-xl mx-auto">
+        Want to be the next one on this page?
+      </h2>
+      <p class="mt-5 text-paper-300 max-w-xl mx-auto">
+        We're looking for early pilot partners with a real perception stack in production or close to it.
+      </p>
+      <div class="mt-8">
+        <a href="/contact" class="btn-primary">Talk to us</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

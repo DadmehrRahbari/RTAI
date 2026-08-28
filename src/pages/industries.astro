@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const industries = [
+  {
+    title: 'Drones & UAVs',
+    summary: 'Perception integrity with a real safety gate in the flight loop, not a log line after the fact.',
+    points: [
+      'Reliability score gates the flight controller directly, a confirmed fault can hold position before a bad frame is ever acted on.',
+      'Runs alongside real flight telemetry (GPS quality, battery, IMU) as additional independent evidence.',
+      'Local self-healing works without a persistent uplink, a disconnected unit keeps detecting, buffering, and recovering, and syncs when it reconnects.',
+    ],
+  },
+  {
+    title: 'Defense & ISR',
+    summary: 'Black-box by design: your perception model\'s weights, gradients, and internals never have to leave your control.',
+    points: [
+      'Decision-making reads only a model\'s outputs, embeddings, boxes, confidence, so it can watch systems you can\'t or won\'t expose.',
+      'Weight-integrity hashing and rollback ladders give an auditable, tamper-evident trail for every model state a unit has run.',
+      'Escalation-over-looping: a persistent fault raises a human alert instead of retrying indefinitely, which matters when the cost of a wrong autonomous action is high.',
+    ],
+  },
+  {
+    title: 'Industrial robotics',
+    summary: 'Local self-healing keeps a line or a warehouse fleet moving without a round trip to the cloud.',
+    points: [
+      'Fine-tune, validate, and hot-reload happen in-process, on real buffered frames from the actual operating environment.',
+      'A bounded, validated rollback ladder means a bad update can always be reverted to the last known-good state.',
+      'Fleet-wide learning is optional, not required, a single unit is fully capable of detecting and healing on its own.',
+    ],
+  },
+];
+---
+
+<BaseLayout title="Industries" description="Where a silent perception failure is not an acceptable outcome.">
+  <section class="mx-auto max-w-6xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 border-b border-ink-600">
+    <p class="eyebrow">Industries</p>
+    <h1 class="mt-5 max-w-3xl font-display text-4xl sm:text-5xl font-semibold leading-tight">
+      Autonomy that has to keep working, and fail safely, unsupervised.
+    </h1>
+    <p class="mt-6 max-w-2xl text-lg text-paper-300">
+      The pattern is the same everywhere it matters most: a perception model operating far from a human
+      operator, where a silent failure is more dangerous than a loud one.
+    </p>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-20 sm:py-28 space-y-20">
+    {
+      industries.map((ind) => (
+        <div class="grid gap-8 md:grid-cols-[0.8fr_1.2fr] md:gap-16">
+          <div>
+            <h2 class="font-display text-2xl sm:text-3xl font-semibold leading-tight">{ind.title}</h2>
+            <p class="mt-4 text-paper-300">{ind.summary}</p>
+          </div>
+          <ul class="space-y-4">
+            {ind.points.map((p) => (
+              <li class="panel text-sm text-paper-300">{p}</li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="border-t border-ink-600">
+    <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28 text-center">
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold max-w-xl mx-auto">
+        Don't see your exact use case? The architecture is deliberately domain-agnostic.
+      </h2>
+      <p class="mt-5 text-paper-300 max-w-xl mx-auto">
+        Anything that emits an embedding, a confidence score, and a bounding box or mask can be monitored.
+      </p>
+      <div class="mt-8">
+        <a href="/contact" class="btn-primary">Talk to us</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ============================================================
+     GLOBAL UI SCALE, the one parameter to change site-wide text
+     (and most spacing) size, now and in the future.
+
+     Every Tailwind text-* size (text-xs, text-sm, text-base, text-lg,
+     text-2xl, ...) and most spacing utilities (p-*, gap-*, etc.) are
+     defined in rem, which is relative to THIS root font-size. Raise
+     or lower this one value and the entire site scales together --
+     no need to touch text-xs -> text-sm across dozens of files.
+
+     100%   = 16px base (browser default, feels small for a marketing site)
+     112.5% = 18px base (current default below, noticeably more readable)
+     125%   = 20px base (large-print / accessibility-first)
+
+     On mobile, we bump it slightly further via the media query below,
+     since phone screens are held closer and benefit from a touch
+     larger base than desktop.
+  ---------------------------------------------------------------- */
+  --ui-scale: 112.5%;
+}
+
+@layer base {
+  html {
+    font-size: var(--ui-scale);
+    scroll-behavior: smooth;
+  }
+  @media (max-width: 640px) {
+    html {
+      font-size: calc(var(--ui-scale) * 1.05);
+    }
+  }
+  body {
+    @apply bg-ink-950 text-paper-100 font-body antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display text-paper-100;
+  }
+  ::selection {
+    @apply bg-amber-500/30 text-paper-100;
+  }
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid theme('colors.amber.500');
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Blueprint-style panel: hairline border + corner ticks, used instead of
+     rounded "cards" so the surface reads as schematic/engineering, not
+     generic SaaS. */
+  .panel {
+    @apply relative border border-ink-600 bg-ink-800/60 p-6 sm:p-8;
+  }
+  .panel::before,
+  .panel::after {
+    content: '';
+    @apply absolute w-2.5 h-2.5 border-amber-500/70 pointer-events-none;
+  }
+  .panel::before {
+    @apply top-0 left-0 border-t border-l;
+  }
+  .panel::after {
+    @apply bottom-0 right-0 border-b border-r;
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs tracking-[0.25em] uppercase text-teal-400;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-amber-500 text-ink-950 font-body font-semibold
+           px-5 py-3 text-sm hover:bg-amber-400 transition-colors;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 border border-ink-600 text-paper-100 font-body font-semibold
+           px-5 py-3 text-sm hover:border-paper-500 transition-colors;
+  }
+
+  .status-chip {
+    @apply inline-flex items-center gap-1.5 font-mono text-xs tracking-wide uppercase
+           border px-2 py-1;
+  }
+  .status-chip.ok {
+    @apply border-teal-500/40 text-teal-400 bg-teal-500/5;
+  }
+  .status-chip.warn {
+    @apply border-amber-500/40 text-amber-400 bg-amber-500/5;
+  }
+  .status-chip.fault {
+    @apply border-fault-500/40 text-fault-400 bg-fault-500/5;
+  }
+
+  .grid-bg {
+    background-image: theme('backgroundImage.grid-lines');
+    background-size: theme('backgroundSize.grid');
+  }
+
+  .pulse-target {
+    transition: background-color 0.5s, border-color 0.5s;
+  }
+  .pulse-target.is-fault {
+    @apply border-fault-500;
+    background-color: rgb(226 84 61 / 0.14);
+  }
+  .pulse-target.is-healing {
+    @apply border-amber-500;
+    background-color: rgb(242 169 59 / 0.14);
+  }
+  .pulse-target.is-healthy {
+    @apply border-teal-500;
+    background-color: rgb(47 184 166 / 0.1);
+  }
+}
