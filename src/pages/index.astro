@@ -48,8 +48,8 @@ const stats = [
         recovers automatically, without ever needing access to the model it's watching.
       </p>
       <div class="mt-8 flex flex-wrap gap-4">
-        <a href="/contact" class="btn-primary">Talk to us</a>
-        <a href="/product" class="btn-secondary">See how it works</a>
+        <a href={`${import.meta.env.BASE_URL}/contact`} class="btn-primary">Talk to us</a>
+        <a href={`${import.meta.env.BASE_URL}/product`} class="btn-secondary">See how it works</a>
       </div>
 
       <div class="mt-14">
@@ -109,7 +109,7 @@ const stats = [
       </div>
 
       <div class="mt-10">
-        <a href="/product" class="text-sm font-mono uppercase tracking-wider text-teal-400 hover:text-teal-300">
+        <a href={`${import.meta.env.BASE_URL}/product`} class="text-sm font-mono uppercase tracking-wider text-teal-400 hover:text-teal-300">
           Read the full architecture &rarr;
         </a>
       </div>
@@ -142,15 +142,15 @@ const stats = [
         Where a silent perception failure is not an acceptable outcome.
       </h2>
       <div class="mt-14 grid gap-6 sm:grid-cols-3">
-        <a href="/industries" class="panel block hover:border-amber-500/50 transition-colors">
+        <a href={`${import.meta.env.BASE_URL}/industries`} class="panel block hover:border-amber-500/50 transition-colors">
           <h3 class="font-display text-lg font-semibold">Drones & UAVs</h3>
           <p class="mt-3 text-sm text-paper-300">Fleet-wide perception integrity, with a real safety gate on the flight controller.</p>
         </a>
-        <a href="/industries" class="panel block hover:border-amber-500/50 transition-colors">
+        <a href={`${import.meta.env.BASE_URL}/industries`} class="panel block hover:border-amber-500/50 transition-colors">
           <h3 class="font-display text-lg font-semibold">Defense & ISR</h3>
           <p class="mt-3 text-sm text-paper-300">Black-box by design, your model's weights never leave your control.</p>
         </a>
-        <a href="/industries" class="panel block hover:border-amber-500/50 transition-colors">
+        <a href={`${import.meta.env.BASE_URL}/industries`} class="panel block hover:border-amber-500/50 transition-colors">
           <h3 class="font-display text-lg font-semibold">Industrial robotics</h3>
           <p class="mt-3 text-sm text-paper-300">Local self-healing keeps a line moving without a round trip to the cloud.</p>
         </a>
@@ -167,7 +167,7 @@ const stats = [
       Bring your perception stack. We'll show you what an independent monitor catches in the first hour.
     </p>
     <div class="mt-8">
-      <a href="/contact" class="btn-primary">Talk to us</a>
+      <a href={`${import.meta.env.BASE_URL}/contact`} class="btn-primary">Talk to us</a>
     </div>
   </section>
 </BaseLayout>
