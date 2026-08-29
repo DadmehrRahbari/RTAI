@@ -52,8 +52,6 @@ The only genuine difference from a classic HTML project: you can't edit a file o
 and see it change (there's a build step between source and output). Everything downstream of that build is
 exactly as simple as it's always been.
 
-
-
 Open `src/site.config.ts`. Company name, tagline, nav links, footer links, email, location, and social
 links all live there. Every page and component reads from it, nothing is hardcoded per-page.
 
@@ -103,7 +101,7 @@ Point nginx, Caddy, or Apache at that folder as a static site. Example minimal n
 ```nginx
 server {
     listen 80;
-    server_name example.com;
+    server_name example.com; 
     root /var/www/RTAI;
     index index.html;
     error_page 404 /404.html;
