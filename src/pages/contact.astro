@@ -30,52 +30,48 @@ import { site } from '../site.config';
         </div>
       </div>
 
-      <!--
-        This form works out of the box, with zero backend, IF hosted on Netlify:
-        Netlify auto-detects `data-netlify="true"` at build time and handles
-        submissions (spam-filtered, emailed to your account) with no server code.
-        If you host elsewhere, swap the form `action` for a service like
-        Formspree, or point it at your own endpoint, everything else here
-        stays the same.
-      -->
-      <form
-        name="contact"
-        method="POST"
-        data-netlify="true"
-        netlify-honeypot="company-website"
-        class="space-y-5"
-      >
-        <input type="hidden" name="form-name" value="contact" />
-        <p class="hidden">
-          <label>Don't fill this out if you're human: <input name="company-website" /></label>
-        </p>
-
-        <div>
-          <label for="name" class="font-mono text-xs uppercase tracking-wider text-paper-500">Name</label>
-          <input id="name" name="name" type="text" required
-            class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none" />
+      <div class="panel">
+        <div data-fs-success class="hidden rounded border border-teal-500/30 bg-teal-500/10 p-4 font-mono text-xs text-teal-400">
+          Thanks! Your message has been sent successfully. We'll be in touch soon.
         </div>
+        <div data-fs-error class="hidden rounded border border-red-500/30 bg-red-500/10 p-4 font-mono text-xs text-red-400"></div>
 
-        <div>
-          <label for="email" class="font-mono text-xs uppercase tracking-wider text-paper-500">Email</label>
-          <input id="email" name="email" type="email" required
-            class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none" />
-        </div>
+        <form id="contact-form" class="space-y-5 mt-4">
+          <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off" />
 
-        <div>
-          <label for="company" class="font-mono text-xs uppercase tracking-wider text-paper-500">Company</label>
-          <input id="company" name="company" type="text"
-            class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none" />
-        </div>
+          <div>
+            <label for="name" class="font-mono text-xs uppercase tracking-wider text-paper-500">Name</label>
+            <input id="name" name="name" type="text" required data-fs-field
+              class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none" />
+          </div>
 
-        <div>
-          <label for="message" class="font-mono text-xs uppercase tracking-wider text-paper-500">What are you building?</label>
-          <textarea id="message" name="message" rows="5" required
-            class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none"></textarea>
-        </div>
+          <div>
+            <label for="email" class="font-mono text-xs uppercase tracking-wider text-paper-500">Email</label>
+            <input id="email" name="email" type="email" required data-fs-field
+              class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none" />
+          </div>
 
-        <button type="submit" class="btn-primary">Send</button>
-      </form>
+          <div>
+            <label for="company" class="font-mono text-xs uppercase tracking-wider text-paper-500">Company</label>
+            <input id="company" name="company" type="text" data-fs-field
+              class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none" />
+          </div>
+
+          <div>
+            <label for="message" class="font-mono text-xs uppercase tracking-wider text-paper-500">What are you building?</label>
+            <textarea id="message" name="message" rows="5" required data-fs-field
+              class="mt-2 w-full border border-ink-600 bg-ink-900 px-4 py-3 text-sm text-paper-100 focus:border-amber-500 outline-none"></textarea>
+          </div>
+
+          <button type="submit" data-fs-submit-btn class="btn-primary">Send</button>
+        </form>
+      </div>
     </div>
   </section>
+
+  <script>
+    window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+    formspree('initForm', { formElement: '#contact-form', formId: 'xdeokwzj' });
+  </script>
+  <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </BaseLayout>
