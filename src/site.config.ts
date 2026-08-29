@@ -1,5 +1,5 @@
 // Single source of truth for site-wide text and links.
-// Change the brand name, tagline, nav, or contact details HERE ONLY --
+// Change the brand name, tagline, nav, or contact details HERE ONLY,
 // every page and component reads from this file, nothing is hardcoded
 // per-page. This is what makes the site "automatic": rebranding,
 // swapping a launch date, or adding a nav item is a one-file edit,
@@ -38,3 +38,4 @@ export const footerLinks: NavLink[] = [
 ];
 
 export const currentYear = new Date().getFullYear();
+
