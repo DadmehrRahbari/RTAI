@@ -5,7 +5,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Avionics / schematic palette -- cool graphite-navy ground,
+        // Avionics / schematic palette, cool graphite-navy ground,
         // amber = attention / signature accent, teal = verified / healthy,
         // red = fault, used sparingly and only for genuine fault states.
         ink: {

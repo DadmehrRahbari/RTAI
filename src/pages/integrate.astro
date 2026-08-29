@@ -1,0 +1,191 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../site.config';
+
+const installSnippet = `pip install rtai-sdk`;
+
+const configSnippet = `# rtai.config.yaml, one file, thresholds tuned to your model's
+# real score distribution, not shipped as placeholders.
+
+tier0:
+  fingerprint_source: fleet        # never "self"
+  check_every_n_frames: 1
+
+meta:
+  canary_interval_seconds: 5
+  checks: [canary, output_sanity, jitter, fleet_consistency]
+
+tier1:
+  drift_test: page_hinkley
+  sustained_window: 30             # inferences, not a single spike
+  ood_threshold: auto              # calibrated against a held-out split
+
+remedy:
+  fine_tune_on_confirmed_drift: true
+  validate_before_hot_reload: true
+  max_rollback_versions: 5
+  escalate_after_repeat_faults: 3  # then stop retrying, alert a human
+`;
+
+const quickstartSnippet = `from rtai import TrustLayer
+
+trust = TrustLayer.from_config("rtai.config.yaml")
+
+output = my_model.predict(input_batch)
+
+decision = trust.evaluate(
+    embedding=output.embedding,
+    confidence=output.confidence,
+    prediction=output.prediction,
+    sensors=telemetry.snapshot(),   # optional
+)
+
+if not decision.trusted:
+    actuator.hold()
+    log.warn(decision.diagnosis, decision.reliability_score)
+`;
+
+const decisionSnippet = `TrustDecision(
+    trusted=False,
+    reliability_score=0.11,          # 0.0 - 1.0, T x H combined
+    diagnosis="tier0_hash_mismatch", # which tier flagged it
+    recommended_action="quarantine_and_resync",
+    tier_results={
+        "tier0": "fault",
+        "meta": "ok",
+        "tier1": "ok",
+        "integrity": "not_evaluated",
+    },
+)`;
+
+const dockerSnippet = `# docker-compose.yml, run the trust layer as a sidecar next to
+# any model-serving container, regardless of what it's written in.
+
+services:
+  my-model:
+    image: your-org/your-model:latest
+
+  rtai-sidecar:
+    image: rtai/sidecar:latest
+    volumes:
+      - ./rtai.config.yaml:/etc/rtai/config.yaml
+    ports:
+      - "8500:8500"   # local REST/gRPC endpoint for the evaluate() call
+`;
+
+const faqs = [
+  {
+    q: 'Does this require access to my model weights?',
+    a: "No. The SDK is black-box by design, it reads outputs only (embedding, confidence, prediction). This is deliberate: it means the trust layer works even for models you can't or won't expose internals of, and it can't itself become a vector for extracting your model.",
+  },
+  {
+    q: "What if my model doesn't output an embedding?",
+    a: 'Most models already compute one internally (the penultimate layer, or a pooled feature map) even if it is not normally exposed, exposing it is usually a one-line change. If truly unavailable, Tier 0 and Meta still run fully; only Tier 1 drift detection needs it.',
+  },
+  {
+    q: 'Can it run fully offline, with no fleet connection?',
+    a: 'Yes. Detection, diagnosis, and local remedy (fine-tune, validate, rollback) all run in-process with no network dependency. Only the fleet-wide trust anchor and cross-unit learning need connectivity, and those degrade gracefully, buffering and syncing when a connection returns.',
+  },
+  {
+    q: 'What language is the SDK written in?',
+    a: 'Python natively today. Any other language reaches it over a small local REST/gRPC call to the same evaluate() logic running as a sidecar, shown above, the wire format is three JSON fields in, one decision object out.',
+  },
+  {
+    q: "What's the actual performance cost?",
+    a: 'The trust layer itself is roughly 154x smaller in parameter count than a typical perception model it might audit, and Tier 0/Meta/Tier 1 run in-process, in the same inference loop, adding a single forward pass through a much smaller network.',
+  },
+];
+---
+
+<BaseLayout title="Integrate" description="How to integrate the RTAI SDK into any AI-based system, in any language or framework.">
+  <section class="mx-auto max-w-6xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 border-b border-ink-600">
+    <p class="eyebrow">Integrate</p>
+    <h1 class="mt-5 max-w-3xl font-display text-4xl sm:text-5xl font-semibold leading-tight">
+      Add an independent trust layer to any AI system you already run.
+    </h1>
+    <p class="mt-6 max-w-2xl text-lg text-paper-300">
+      No retraining your model. No exposing its weights. No rewrite of your inference loop beyond a few
+      lines. This page is the complete path from "nothing installed" to "a fault gets caught and healed
+      automatically", everything below is real, working code, not a diagram of an idea.
+    </p>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+    <p class="eyebrow">1. Install</p>
+    <pre class="panel overflow-x-auto text-sm text-paper-100 font-mono mt-4"><code>{installSnippet}</code></pre>
+    <p class="mt-4 text-sm text-paper-500">Python 3.9+. No GPU required to run the trust layer itself.</p>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-16 sm:py-20 border-t border-ink-600">
+    <p class="eyebrow">2. Configure once</p>
+    <h2 class="mt-4 max-w-2xl font-display text-xl sm:text-2xl font-semibold leading-tight">
+      Thresholds live in one YAML file, not scattered across your codebase.
+    </h2>
+    <pre class="panel overflow-x-auto text-xs sm:text-sm leading-relaxed text-paper-100 font-mono mt-6"><code>{configSnippet}</code></pre>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-16 sm:py-20 border-t border-ink-600">
+    <p class="eyebrow">3. Call it from your inference loop</p>
+    <pre class="panel overflow-x-auto text-xs sm:text-sm leading-relaxed text-paper-100 font-mono mt-6"><code>{quickstartSnippet}</code></pre>
+  </section>
+
+  <section class="border-y border-ink-600 bg-ink-900/40">
+    <div class="mx-auto max-w-6xl px-6 py-16 sm:py-20">
+      <p class="eyebrow">4. What you get back</p>
+      <h2 class="mt-4 max-w-2xl font-display text-xl sm:text-2xl font-semibold leading-tight">
+        A diagnosis, not just a number.
+      </h2>
+      <p class="mt-4 max-w-2xl text-paper-300">
+        Every call returns which tier flagged the problem and what it recommends, so your system can react
+        differently to "the monitor itself is compromised" versus "the model is seeing something new" --
+        the two require completely different responses.
+      </p>
+      <pre class="panel overflow-x-auto text-xs sm:text-sm leading-relaxed text-paper-100 font-mono mt-6"><code>{decisionSnippet}</code></pre>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-16 sm:py-20 border-b border-ink-600">
+    <p class="eyebrow">Not on Python, or the model runs elsewhere?</p>
+    <h2 class="mt-4 max-w-2xl font-display text-xl sm:text-2xl font-semibold leading-tight">
+      Run it as a sidecar. Any language reaches it the same way.
+    </h2>
+    <p class="mt-4 max-w-2xl text-paper-300">
+      A C++ perception stack, a Rust control loop, a Go microservice, all of them can call the same
+      three-field evaluate() contract over a local REST or gRPC endpoint, with the trust layer running as
+      its own lightweight container next to the model it's watching.
+    </p>
+    <pre class="panel overflow-x-auto text-xs sm:text-sm leading-relaxed text-paper-100 font-mono mt-6"><code>{dockerSnippet}</code></pre>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+    <p class="eyebrow">FAQ</p>
+    <h2 class="mt-4 max-w-xl font-display text-2xl sm:text-3xl font-semibold leading-tight">
+      What people ask before their first integration.
+    </h2>
+    <div class="mt-14 space-y-8">
+      {
+        faqs.map((f) => (
+          <div class="border-t border-ink-600 pt-6">
+            <h3 class="font-display text-base font-semibold text-paper-100">{f.q}</h3>
+            <p class="mt-2 text-sm text-paper-300 max-w-2xl">{f.a}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="border-t border-ink-600">
+    <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28 text-center">
+      <h2 class="font-display text-2xl sm:text-3xl font-semibold max-w-xl mx-auto">
+        Stuck on an integration, or running something unusual?
+      </h2>
+      <p class="mt-5 text-paper-300 max-w-xl mx-auto">
+        {site.name} was built to be model- and language-agnostic from day one. If your setup doesn't fit
+        the patterns above, that's a conversation, not a dead end.
+      </p>
+      <div class="mt-8">
+        <a href={`${import.meta.env.BASE_URL}/contact`} class="btn-primary">Talk to us</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -2,7 +2,7 @@
 // One script, zero manual steps: installs dependencies if they're missing,
 // starts the dev server, and opens your default browser automatically
 // (via Astro's own --open flag). Works the same on Windows, macOS, and
-// Linux -- called by start.bat, start.sh, or `npm run launch` directly.
+// Linux, called by start.bat, start.sh, or `npm run launch` directly.
 
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -15,10 +15,10 @@ process.chdir(root);
 const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
 if (!existsSync(path.join(root, 'node_modules'))) {
-  console.log('[launch] First run detected -- installing dependencies (npm install)...');
+  console.log('[launch] First run detected, installing dependencies (npm install)...');
   const install = spawnSync(npmCmd, ['install'], { stdio: 'inherit', shell: true });
   if (install.status !== 0) {
-    console.error('[launch] npm install failed -- see the error above. Fix that, then run this again.');
+    console.error('[launch] npm install failed, see the error above. Fix that, then run this again.');
     process.exit(install.status ?? 1);
   }
 }

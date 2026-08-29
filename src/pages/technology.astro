@@ -10,7 +10,52 @@ const faults = [
 ];
 
 const references = [
-  'Rahbari, D., Daneshtalab, M., & Jenihhin, M. (2026). Aux-AI: A Federated Independent Oversight Framework for Trust-Aware Industrial Autonomy.',
+  'Rahbari, D., Daneshtalab, M., & Jenihhin, M. (2026). Aux-AI: A Federated Independent Oversight Framework for Trust-Aware Industrial Autonomy., the research this system implements.',
+  'Bansal, A., Kim, H., Yu, S., Li, B., Hovakimyan, N., Caccamo, M., & Sha, L. (2022/2023). Perception Simplex: Verifiable Collision Avoidance in Autonomous Vehicles Amidst Obstacle Detection Faults. arXiv:2209.01710.',
+  'Mehmood, U., Sheikhi, S., Bak, S., Smolka, S. A., & Stoller, S. D. (2021/2022). The Black-Box Simplex Architecture for Runtime Assurance of Autonomous CPS. arXiv:2102.12981.',
+  'Poudel, R. P. K., & Liwicki, S. (2019). Fast-SCNN: Fast Semantic Segmentation Network.',
+  'Cordts, M., et al. (2016). The Cityscapes Dataset for Semantic Urban Scene Understanding.',
+  'Page, E. S. (1954). Continuous Inspection Schemes., Page-Hinkley sequential change detection.',
+  'Blanchard, P., et al. (2017). Machine Learning with Adversaries: Byzantine Tolerant Gradient Descent.',
+  'NIST AI RMF 1.0 (2023) and ISO/IEC 42001:2023, the trustworthiness and AI-management-system vocabulary this page aligns its claims to.',
+];
+
+const principles = [
+  {
+    n: '01',
+    title: 'Independent',
+    body: "The monitor cannot share a failure mode with what it monitors. Different weights, different training data, ideally a different architecture family entirely, if the same corrupted memory page, the same adversarial input, or the same blind spot can take out both, it isn't independent oversight, it's the same single point of failure wearing two names.",
+  },
+  {
+    n: '02',
+    title: 'Verifiable',
+    body: "A system that certifies its own health against its own memory of its own past state has no real anchor. Integrity has to be checked against something external, a fresh fingerprint from a fleet service, a federated resync, a signed release, never generated on-device from nothing.",
+  },
+  {
+    n: '03',
+    title: 'Fast enough to act, not just observe',
+    body: "A dashboard that shows a problem five minutes after it happened is observability, not safety. If the system can take a physical or consequential action, the monitor has to run inline, in the same loop, fast enough to gate that action before it happens.",
+  },
+  {
+    n: '04',
+    title: 'Explainable at the point of failure',
+    body: 'An anomaly score tells you something is wrong. A diagnosis tells you what to do about it. "Trust dropped to 0.11" is not actionable on its own; "tier0_hash_mismatch, quarantine and resync" is.',
+  },
+  {
+    n: '05',
+    title: 'Bounded and reversible',
+    body: 'Every automated fix must be validated against held-out evidence before it is trusted, and every accepted state must join a bounded, revertible history. An unbounded self-modifying system is not self-healing, it is an unaudited one.',
+  },
+  {
+    n: '06',
+    title: "Escalates, doesn't mask",
+    body: 'A fault that keeps recurring after repeated automated remediation has to stop retrying and reach a human. A system that quietly re-heals the same fault forever is hiding a problem, not solving it.',
+  },
+  {
+    n: '07',
+    title: 'Improves the fleet without centralizing raw data',
+    body: 'Cross-unit learning should happen through weighted, validated aggregation of model updates, not by shipping raw sensor data to a central store. Privacy and fleet-wide improvement are not a trade-off if the architecture is federated from the start.',
+  },
 ];
 ---
 
@@ -22,12 +67,42 @@ const references = [
     </h1>
     <p class="mt-6 max-w-2xl text-lg text-paper-300">
       Every claim on this page is backed by a controlled fault-injection benchmark, run against real
-      perception checkpoints where possible, engineered specifically to demonstrate the blind spots of
+      model checkpoints where possible, engineered specifically to demonstrate the blind spots of
       simpler approaches rather than just assert them.
     </p>
   </section>
 
+  <!-- Seven principles -->
   <section class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+    <p class="eyebrow">What reliable, trustworthy edge AI requires</p>
+    <h2 class="mt-4 max-w-2xl font-display text-2xl sm:text-3xl font-semibold leading-tight">
+      Seven principles we use to evaluate ourselves, and would ask any vendor to answer to.
+    </h2>
+    <p class="mt-6 max-w-2xl text-paper-300">
+      This isn't a list of our own features dressed up as an industry standard. It's the checklist we
+      think anyone deploying AI in a system that can't afford to fail should be able to run against
+      whatever they choose, us included. Where we fall short of one of these today, we say so.
+    </p>
+    <div class="mt-14 grid gap-6 sm:grid-cols-2">
+      {
+        principles.map((p) => (
+          <div class="panel">
+            <span class="font-mono text-xs text-amber-500">{p.n}</span>
+            <h3 class="mt-3 font-display text-lg font-semibold">{p.title}</h3>
+            <p class="mt-3 text-sm text-paper-300">{p.body}</p>
+          </div>
+        ))
+      }
+    </div>
+    <p class="mt-8 max-w-2xl text-sm text-paper-500">
+      This vocabulary is deliberately close to the NIST AI Risk Management Framework's trustworthiness
+      characteristics and ISO/IEC 42001's AI-management-system principles, not because we hold either
+      certification today, but because a shared language is what lets a safety or procurement review
+      actually compare vendors instead of comparing marketing pages.
+    </p>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-20 sm:py-28 border-t border-ink-600">
     <p class="eyebrow">Benchmark design</p>
     <h2 class="mt-4 max-w-2xl font-display text-2xl sm:text-3xl font-semibold leading-tight">
       Five fault types, three arms, measured the same way every time.
@@ -83,7 +158,7 @@ const references = [
         </div>
         <div class="panel">
           <h3 class="font-display text-base font-semibold">Recovery latency</h3>
-          <p class="mt-3 text-sm text-paper-300">Frames from fault onset to a verified, trusted state, and segmentation quality before/after a heal cycle.</p>
+          <p class="mt-3 text-sm text-paper-300">Frames from fault onset to a verified, trusted state, and output quality before/after a heal cycle.</p>
         </div>
       </div>
     </div>
@@ -112,7 +187,7 @@ const references = [
 
     <div class="mt-16 border-t border-ink-600 pt-10">
       <p class="eyebrow">References</p>
-      <ul class="mt-4 space-y-2 text-sm text-paper-500 font-mono">
+      <ul class="mt-4 space-y-3 text-sm text-paper-500 font-mono leading-relaxed">
         {references.map((r) => <li>{r}</li>)}
       </ul>
     </div>
@@ -134,16 +209,16 @@ const references = [
       <div class="mt-14 grid gap-6 sm:grid-cols-3">
         <div class="panel">
           <span class="status-chip ok">Inline</span>
-          <h3 class="mt-4 font-display text-base font-semibold">Every frame, next to Big-AI</h3>
+          <h3 class="mt-4 font-display text-base font-semibold">Every inference, next to the model</h3>
           <p class="mt-3 text-sm text-paper-300">
-            Tier 0, Meta, and Tier 1 run in-process, fast enough to gate the actuator before a bad frame is
+            Tier 0, Meta, and Tier 1 run in-process, fast enough to gate the actuator before a bad output is
             ever acted on. This is the same principle formalized in runtime-assurance research for
-            autonomous vehicles, pairing a fast, unverifiable perception layer with a monitor that can
+            autonomous cyber-physical systems, pairing a fast, unverifiable model with a monitor that can
             intervene in real time, an idea academic work calls the Simplex and Perception Simplex
-            architectures. The honest difference: those architectures typically wrap a provably-bounded
-            classical detector; ours is a learned, statistical trust layer, traded for the ability to watch
-            any perception model rather than one with a hand-derived safety proof. Closing that gap for the
-            single highest-stakes failure mode is on our roadmap, not a solved problem.
+            architectures (see references). The honest difference: those architectures typically wrap a
+            provably-bounded classical detector; ours is a learned, statistical trust layer, traded for the
+            ability to watch any model rather than one with a hand-derived safety proof. Closing that gap
+            for the single highest-stakes failure mode is on our roadmap, not a solved problem.
           </p>
         </div>
         <div class="panel">
@@ -151,7 +226,7 @@ const references = [
           <h3 class="mt-4 font-display text-base font-semibold">A dedicated, federated service</h3>
           <p class="mt-3 text-sm text-paper-300">
             The federated coordinator and fleet-stats endpoint run asynchronously, aggregating trust across
-            every connected unit, too slow and too expensive to run per frame, but this is where a
+            every connected unit, too slow and too expensive to run per inference, but this is where a
             quarantined node's fresh, verified reference actually comes from. Standard MLOps monitoring
             architecture converges on the same split: a lightweight in-process check paired with a
             dedicated service for anything that needs a wider view.
@@ -163,8 +238,8 @@ const references = [
           <p class="mt-3 text-sm text-paper-300">
             The fault-injection benchmark on this page runs as a release gate, not a one-off report --
             producing the detection-rate, false-positive, and recovery-latency numbers a safety review or
-            an AI governance framework will ask for before anything ships. Too slow for every frame, exactly
-            right for every release.
+            an AI governance framework will ask for before anything ships. Too slow for every inference,
+            exactly right for every release.
           </p>
         </div>
       </div>
@@ -174,10 +249,11 @@ const references = [
   <section class="border-t border-ink-600">
     <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28 text-center">
       <h2 class="font-display text-2xl sm:text-3xl font-semibold max-w-xl mx-auto">
-        Want the benchmark run against your own perception model?
+        Want the benchmark run against your own model?
       </h2>
-      <div class="mt-8">
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
         <a href={`${import.meta.env.BASE_URL}/contact`} class="btn-primary">Talk to us</a>
+        <a href={`${import.meta.env.BASE_URL}/integrate`} class="btn-secondary">See the integration guide</a>
       </div>
     </div>
   </section>

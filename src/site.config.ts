@@ -8,9 +8,9 @@
 export const site = {
   name: 'RTAI',
   legalName: 'RTAI OÜ',
-  tagline: 'Reliable, self-healing AI for autonomous systems.',
+  tagline: 'Reliable, self-healing AI for any autonomous or AI-driven system.',
   description:
-    'RTAI is an independent trust and self-healing layer for perception AI in autonomous systems, drones, robots, and vehicles that must keep working, and fail safely, without a human watching every frame.',
+    'RTAI is an independent trust and self-healing layer for AI decision-making, perception, control, or judgment, in any system that must keep working, and fail safely, without a human watching every inference. Framework-agnostic, model-agnostic, and deployable anywhere the model it watches runs.',
   url: 'https://example.com',
   email: 'hello@RTAI.example',
   location: 'Tallinn & Tartu, Estonia',
@@ -24,6 +24,7 @@ export type NavLink = { label: string; href: string };
 
 export const nav: NavLink[] = [
   { label: 'Product', href: '/product' },
+  { label: 'Integrate', href: '/integrate' },
   { label: 'Industries', href: '/industries' },
   { label: 'Technology', href: '/technology' },
   { label: 'Case studies', href: '/case-studies' },

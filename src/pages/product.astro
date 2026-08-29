@@ -6,8 +6,8 @@ const tiers = [
   {
     tag: 'Tier 0',
     title: 'Hardware integrity',
-    cadence: 'Every frame',
-    body: 'A real cryptographic hash of the monitor\'s own weights, checked against a fingerprint issued from outside the device, never from its own past state. A mismatch quarantines the node and requests a verified resync. No local repair is attempted on a system that can no longer vouch for itself.',
+    cadence: 'Every inference',
+    body: "A real cryptographic hash of the monitor's own weights, checked against a fingerprint issued from outside the device, never from its own past state. A mismatch quarantines the node and requests a verified resync. No local repair is attempted on a system that can no longer vouch for itself.",
   },
   {
     tag: 'Meta',
@@ -17,32 +17,74 @@ const tiers = [
   },
   {
     tag: 'Tier 1',
-    title: 'Perceptual drift',
-    cadence: 'Every frame, sustained',
-    body: 'A sequential change-detection test on out-of-distribution signal, so a single noisy frame never triggers a false alarm, only genuine, sustained drift does. A second check tells "the world changed" apart from "this is a genuinely new class," since only the former is safe to learn from automatically.',
+    title: 'Model drift',
+    cadence: 'Every inference, sustained',
+    body: 'A sequential change-detection test on out-of-distribution signal, so a single noisy input never triggers a false alarm, only genuine, sustained drift does. A second check tells "the world changed" apart from "this is a genuinely new class," since only the former is safe to learn from automatically.',
   },
   {
     tag: 'Integrity',
-    title: 'Perception model audit',
+    title: 'Model audit',
     cadence: 'Configurable',
-    body: 'Where you control the deployed perception model, the same weight-hash and a repeatability canary close the gap between "the output looks anomalous" and "the model itself is compromised", so a corrupted model is never mistaken for a legitimate discovery.',
+    body: 'Where you control the deployed model, the same weight-hash and a repeatability canary close the gap between "the output looks anomalous" and "the model itself is compromised", so a corrupted model is never mistaken for a legitimate discovery.',
   },
 ];
 
 const remedies = [
   {
     title: 'Verified resync',
-    body: 'A hardware or behavioral fault in the monitor is never repaired locally. The only remedy is a fresh, server-verified model, a node can\'t certify its own health against itself.',
+    body: "A hardware or behavioral fault in the monitor is never repaired locally. The only remedy is a fresh, server-verified model, a node can't certify its own health against itself.",
   },
   {
     title: 'Fine-tune, validate, roll back',
-    body: 'Confirmed drift triggers a candidate fine-tune on real, buffered frames. It\'s adopted only if it doesn\'t regress against a held-out validation split, and every accepted version joins a bounded rollback ladder, nothing unvalidated can ever enter it.',
+    body: "Confirmed drift triggers a candidate fine-tune on real, buffered data. It's adopted only if it doesn't regress against a held-out validation split, and every accepted version joins a bounded rollback ladder, nothing unvalidated can ever enter it.",
   },
   {
-    title: 'Escalate, don\'t loop',
+    title: "Escalate, don't loop",
     body: 'A fault that keeps recurring after repeated automated fixes stops retrying and raises a human alert instead. Self-healing that never gives up is a liability, not a feature.',
   },
 ];
+
+const inputSnippet = `# Any framework, any model family, the SDK only needs three things
+# per inference: an embedding, a confidence signal, and a decision.
+
+from rtai import TrustLayer
+
+trust = TrustLayer.from_config("rtai.config.yaml")
+
+# In your existing inference loop, wherever it lives:
+output = my_model.predict(input_batch)
+
+decision = trust.evaluate(
+    embedding=output.embedding,      # feature vector / penultimate layer
+    confidence=output.confidence,    # softmax, logit, or calibrated score
+    prediction=output.prediction,    # class, box, control signal, forecast...
+    sensors=telemetry.snapshot(),    # optional: IMU, GPS, timestamps, anything
+)
+
+if not decision.trusted:
+    actuator.hold()                  # veto the action before it happens
+    log.warn(decision.diagnosis)     # e.g. "tier1_sustained_drift"
+`;
+
+const wrapperSnippet = `# Not on Python, or the model runs in a different process/service?
+# Wrap the same three inputs behind a small local endpoint, the SDK
+# talks to itself over gRPC/REST identically either way.
+
+POST /v1/evaluate
+{
+  "embedding": [0.0123, -0.881, ...],
+  "confidence": 0.94,
+  "prediction": {"class": "pedestrian", "box": [120,80,300,400]},
+  "sensors": {"imu_ok": true, "gps_hdop": 1.2}
+}
+
+-> {
+  "trusted": false,
+  "reliability_score": 0.11,
+  "diagnosis": "tier0_hash_mismatch",
+  "action": "quarantine_and_resync"
+}
+`;
 ---
 
 <BaseLayout title="Product" description="How the tiered self-healing architecture works.">
@@ -52,9 +94,9 @@ const remedies = [
       A monitor that audits its own trust, not just yours.
     </h1>
     <p class="mt-6 max-w-2xl text-lg text-paper-300">
-      {site.name} sits between your sensors and your perception model's consumers, reading only its
-      outputs, never its weights or gradients, and runs a tiered self-healing pipeline that never assumes
-      it is the one part of the system that can't fail.
+      {site.name} sits between any AI model and its consumers, whether that's a flight controller, a
+      dashboard, or an API caller, reading only its outputs, never its weights or gradients, and runs a
+      tiered self-healing pipeline that never assumes it is the one part of the system that can't fail.
     </p>
   </section>
 
@@ -91,8 +133,7 @@ const remedies = [
       <p class="mt-6 max-w-2xl text-paper-300">
         Every signal above feeds a single routing table that decides where a problem actually originates
         before anything is touched: a compromised monitor is never trusted to grade the model it's
-        watching, and a corrupted perception model is never mistaken for a legitimate discovery worth
-        learning from.
+        watching, and a corrupted model is never mistaken for a legitimate discovery worth learning from.
       </p>
 
       <div class="mt-14 grid gap-6 sm:grid-cols-3">
@@ -112,7 +153,7 @@ const remedies = [
     <p class="eyebrow">Fleet learning</p>
     <div class="grid gap-10 md:grid-cols-[1fr_1fr] md:gap-16 items-start">
       <h2 class="font-display text-2xl sm:text-3xl font-semibold leading-tight">
-        What one unit learns strengthens the fleet, without a single raw frame leaving it.
+        What one unit learns strengthens the fleet, without a single raw data point leaving it.
       </h2>
       <div class="space-y-5 text-paper-300">
         <p>
@@ -126,6 +167,52 @@ const remedies = [
           the training set the day it shipped, and every step of that improvement is validated before
           it's trusted.
         </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Integrate the SDK -->
+  <section class="border-y border-ink-600 bg-ink-900/40">
+    <div class="mx-auto max-w-6xl px-6 py-20 sm:py-28">
+      <p class="eyebrow">Integrate the SDK</p>
+      <h2 class="mt-4 max-w-2xl font-display text-2xl sm:text-3xl font-semibold leading-tight">
+        Three inputs. One decision object. No access to your model required.
+      </h2>
+      <p class="mt-6 max-w-2xl text-paper-300">
+        The SDK doesn't care what kind of model you run, a vision transformer, a classical control loop, a
+        forecasting model, or a policy network, only that it can produce these three things at inference
+        time. If your model already logs a confidence score for debugging, you're most of the way there.
+      </p>
+
+      <div class="mt-12">
+        <p class="font-mono text-xs uppercase tracking-wider text-paper-500 mb-3">Quickstart, Python</p>
+        <pre class="panel overflow-x-auto text-xs sm:text-sm leading-relaxed text-paper-100 font-mono"><code>{inputSnippet}</code></pre>
+      </div>
+
+      <div class="mt-8">
+        <p class="font-mono text-xs uppercase tracking-wider text-paper-500 mb-3">Any other stack, over a local service call</p>
+        <pre class="panel overflow-x-auto text-xs sm:text-sm leading-relaxed text-paper-100 font-mono"><code>{wrapperSnippet}</code></pre>
+      </div>
+
+      <div class="mt-12 grid gap-6 sm:grid-cols-3">
+        <div class="border-t border-ink-600 pt-5">
+          <h3 class="font-display text-base font-semibold text-paper-100">Framework-agnostic</h3>
+          <p class="mt-2 text-sm text-paper-500">PyTorch, TensorFlow, ONNX, a hand-rolled classical controller, it doesn't matter. Only the three output fields matter.</p>
+        </div>
+        <div class="border-t border-ink-600 pt-5">
+          <h3 class="font-display text-base font-semibold text-paper-100">Language-agnostic</h3>
+          <p class="mt-2 text-sm text-paper-500">Native SDK in Python today; a thin REST/gRPC wrapper makes it reachable from C++, Rust, Go, or anything else.</p>
+        </div>
+        <div class="border-t border-ink-600 pt-5">
+          <h3 class="font-display text-base font-semibold text-paper-100">Deploy-target-agnostic</h3>
+          <p class="mt-2 text-sm text-paper-500">Runs in-process on the same edge device as your model, as a sidecar container, or as a nearby local service.</p>
+        </div>
+      </div>
+
+      <div class="mt-10">
+        <a href={`${import.meta.env.BASE_URL}/integrate`} class="text-sm font-mono uppercase tracking-wider text-teal-400 hover:text-teal-300">
+          Full integration guide &rarr;
+        </a>
       </div>
     </div>
   </section>
