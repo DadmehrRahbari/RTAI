@@ -24,7 +24,7 @@ const industries = [
     title: 'Industrial automation',
     summary: 'Local self-healing keeps a line or a warehouse fleet moving without a round trip to the cloud.',
     points: [
-      'Fine-tune, validate, and hot-reload happen in-process, on real buffered data from the actual operating environment.',
+      "The trust layer's own healing, retraining, validating, rolling back, happens in-process on real buffered data, with zero dependency on a cloud round trip.",
       'A bounded, validated rollback ladder means a bad update can always be reverted to the last known-good state.',
       "Fleet-wide learning is optional, not required, a single unit is fully capable of detecting and healing on its own.",
     ],
@@ -41,17 +41,18 @@ const alsoFor = [
 ];
 ---
 
-<BaseLayout title="Industries" description="Where a silent AI failure is not an acceptable outcome, in any kind of system.">
+<BaseLayout title="Industries" description="Any software or hardware AI system, in any industry, where a silent failure is not an acceptable outcome.">
   <section class="mx-auto max-w-6xl px-6 pt-20 pb-16 sm:pt-28 sm:pb-20 border-b border-ink-600">
     <p class="eyebrow">Industries</p>
     <h1 class="mt-5 max-w-3xl font-display text-4xl sm:text-5xl font-semibold leading-tight">
-      Any AI-based system that has to keep working, and fail safely, unsupervised.
+      Any software or hardware system that runs AI. Not a list of three industries.
     </h1>
     <p class="mt-6 max-w-2xl text-lg text-paper-300">
-      The pattern is the same everywhere it matters most: an AI model making decisions far from a human
-      operator, where a silent failure is more dangerous than a loud one. The architecture is deliberately
-      not built around any one sensor type, output format, or industry, it's built around the shape of the
-      problem, which shows up almost everywhere machine judgment drives a real-world action.
+      This isn't scoped to drones, defense, or robotics, those are simply where we've validated deepest. The
+      trust layer attaches to any software or hardware product that has an AI model making decisions inside
+      it, on any sensor type, any output format, any industry. The pattern is the same everywhere it matters
+      most: an AI model deciding something far from a human operator, where a silent failure is more
+      dangerous than a loud one.
     </p>
   </section>
 
@@ -115,3 +116,4 @@ const alsoFor = [
     </div>
   </section>
 </BaseLayout>
+
